@@ -4,9 +4,13 @@ let pz= [];
 let pzX= [];
 let pzY= [];
 let pzOn= [];
+let pzMv= [];
+let pzFreeze= [];
 let pzAnswerX= [];
 let pzAnswerY= [];
-
+let xDist;
+let yDist;
+let magnet;
 function preload(){
   //image
   ///puzzle
@@ -33,46 +37,50 @@ function setup(){
     pzX[i]= 500;
     pzY[i]= 325;
     pzOn[i]=false;
+    pzMv[i]=false;
+    pzFreeze[i]=false;
   }
+  xDist=0;
+  yDist=0;
 
   //set puzzle answer
+  magnet=15;
   ///puzzle1
-  pzAnswerX[1]=12345;
-  pzAnswerY[1]=12345;
+  pzAnswerX[1]=100;
+  pzAnswerY[1]=75;
   ///puzzle2
-  pzAnswerX[2]=12345;
-  pzAnswerY[2]=12345;
+  pzAnswerX[2]=250;
+  pzAnswerY[2]=75;
   ///puzzle3
-  pzAnswerX[3]=12345;
-  pzAnswerY[3]=12345;
+  pzAnswerX[3]=375;
+  pzAnswerY[3]=100;
   ///puzzle4
-  pzAnswerX[4]=12345;
-  pzAnswerY[4]=12345;
+  pzAnswerX[4]=500
+  pzAnswerY[4]=100;
   ///puzzle5
-  pzAnswerX[5]=12345;
-  pzAnswerY[5]=12345;
+  pzAnswerX[5]=75;
+  pzAnswerY[5]=200;
   ///puzzle6
-  pzAnswerX[6]=12345;
-  pzAnswerY[6]=12345;
+  pzAnswerX[6]=200;
+  pzAnswerY[6]=200;
   ///puzzle7
-  pzAnswerX[7]=12345;
-  pzAnswerY[7]=12345;
+  pzAnswerX[7]=350;
+  pzAnswerY[7]=225;
   ///puzzle8
-  pzAnswerX[8]=12345;
-  pzAnswerY[8]=12345;
+  pzAnswerX[8]=500;
+  pzAnswerY[8]=250;
   ///puzzle9
-  pzAnswerX[9]=12345;
-  pzAnswerY[9]=12345;
+  pzAnswerX[9]=75;
+  pzAnswerY[9]=350;
   ///puzzle10
-  pzAnswerX[10]=12345;
-  pzAnswerY[10]=12345;
+  pzAnswerX[10]=225;
+  pzAnswerY[10]=350;
   ///puzzle11
-  pzAnswerX[11]=12345;
-  pzAnswerY[11]=12345;
+  pzAnswerX[11]=375;
+  pzAnswerY[11]=350;
   ///puzzle12
-  pzAnswerX[12]=12345;
-  pzAnswerY[12]=12345;
-
+  pzAnswerX[12]=500;
+  pzAnswerY[12]=375;
 }
 
 function draw() {
@@ -96,14 +104,17 @@ function draw() {
   fill(255);
   rect(200,100,600,450);
 
-  sensePuzzle(1);
-  putPuzzle(1);
-  sensePuzzle(1);
-  effectPuzzle(1);
-  posPuzzle(1);
-  fixPuzzle(1);
-  putPuzzle(1);
-
+  for(let i=1; i<13; i++){
+    if(mouseIsPressed==false){
+      sensePuzzle(i);
+    }
+  }
+  for(let i=1; i<13; i++){
+    effectPuzzle(i);
+    movePuzzle(i);
+    fixPuzzle(i);
+    putPuzzle(i);
+  }
 }
 
 
@@ -144,17 +155,61 @@ function effectPuzzle(_num){
   let h=pic.height;
 
   if(pzOn[_num]==true){
-    rectMode(CENTER);
-    fill(255,255,0, 125);
-    rect(x,y,w+10,h+10);
+      if (mouseIsPressed==true){
+      rectMode(CENTER);
+      fill(200, 200);
+      rect(x,y,w+20,h+20);
+    } else {
+      rectMode(CENTER);
+      fill(200, 100);
+      rect(x,y,w+20,h+20);
+    }
   }
 }
 
-function posPuzzle(_num){
+function movePuzzle(_num){
+  let pic=pz[_num];
+  let x=pzX[_num];
+  let y=pzY[_num];
+  let w=pic.width;
+  let h=pic.height;
 
+  if(pzOn[_num]==true){
+    if (mouseIsPressed==true){
+      if(pzMv[_num]==false){
+        xDist=mouseX-x;
+        yDist=mouseY-y;
+        pzMv[_num]=true;
+      }
+    } else {
+      xDist=0;
+      yDist=0;
+      pzMv[_num]=false;
+    }
+  } else {
+    xDist=0;
+    yDist=0;
+    pzMv[_num]=false;
+  }
+    if (pzMv[_num]==true){
+      pzX[_num]= mouseX-xDist;
+      pzY[_num]= mouseY-yDist;
+    }
 }
 
 function fixPuzzle(_num){
+  let x=pzX[_num];
+  let y=pzY[_num];
+  let ax=pzAnswerX[_num]+200;
+  let ay=pzAnswerY[_num]+100;
+  let d=magnet;
+
+  if (x<ax+d && x> ax-d){
+    if (y<ay+d && y>ay-d){
+      pzX[_num]=ax;
+      pzY[_num]=ay;
+    }
+  }
 
 }
 
