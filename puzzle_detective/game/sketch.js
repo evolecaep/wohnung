@@ -1,11 +1,14 @@
 
+let stage;
+
 //image
 let pz= [];
 let pzX= [];
 let pzY= [];
 let pzOn= [];
 let pzMv= [];
-let pzFreeze= [];
+let pzEnd= [];
+let countPuzzle;
 let pzAnswerX= [];
 let pzAnswerY= [];
 let xDist;
@@ -31,6 +34,8 @@ function preload(){
 
 function setup(){
   createCanvas(1000,800);
+  stage=1;
+  //for test stage set as 1
 
   //set puzzle value
   for (let i=1; i<13; i++) {
@@ -38,8 +43,9 @@ function setup(){
     pzY[i]= 325;
     pzOn[i]=false;
     pzMv[i]=false;
-    pzFreeze[i]=false;
+    pzEnd[i]=false;
   }
+  countPuzzle=0;
   xDist=0;
   yDist=0;
 
@@ -104,16 +110,31 @@ function draw() {
   fill(255);
   rect(200,100,600,450);
 
-  for(let i=1; i<13; i++){
-    if(mouseIsPressed==false){
-      sensePuzzle(i);
-    }
-  }
-  for(let i=1; i<13; i++){
-    effectPuzzle(i);
-    movePuzzle(i);
-    fixPuzzle(i);
-    putPuzzle(i);
+  switch (stage) {
+
+    case 0:
+      break;
+
+    case 1:
+      for(let i=1; i<13; i++){
+        if(mouseIsPressed==false){
+          sensePuzzle(i);
+        }
+      }
+      for(let i=1; i<13; i++){
+        effectPuzzle(i);
+        movePuzzle(i);
+        fixPuzzle(i);
+        putPuzzle(i);
+      }
+      isPuzzleDone();
+      break;
+      case 2:
+      fill(255,0,0);
+      rectMode(CORNER);
+      rect(0,0,1000,800);
+    default:
+      break;
   }
 }
 
@@ -208,6 +229,7 @@ function fixPuzzle(_num){
     if (y<ay+d && y>ay-d){
       pzX[_num]=ax;
       pzY[_num]=ay;
+
     }
   }
 
@@ -227,4 +249,16 @@ function putPuzzle( _num ){
   rectMode(CENTER);
   fill(255,0,0);
   rect(x,y,10,10)
+}
+
+function isPuzzleDone(){
+  for (let i=1; i<13; i++){
+    if(pzEnd[i]==true){
+      countPuzzle=countPuzzle+1;
+    }
+  }
+  if(countPuzzle==12){
+    stage=stage+1;
+  }
+  countPuzzle=0;
 }
