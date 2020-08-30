@@ -1,10 +1,19 @@
+
+
 function setup() {
-  createCanvas(1000,1000);
+  createCanvas(1200,1000);
+
+
+//object
+//image
+//
 
 }
 
 function draw() {
   background(0,0,0);
-  fill(50,50,0);
-  ellipse(50,50,50,50);
+
+  //for background
+  rect(200,200,800,600);
+  
 }
