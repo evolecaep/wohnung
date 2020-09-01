@@ -34,7 +34,7 @@ function preload(){
 
 function setup(){
   createCanvas(1000,800);
-  stage=1;
+  stage=0;
   //for test stage set as 1
 
   //set puzzle value
@@ -107,7 +107,7 @@ function draw() {
   fill(0,125,0);
   //rect(800,100,200,450);
   //screen
-  fill(255);
+  fill(20);
   rect(200,100,600,450);
 
   switch (stage) {
@@ -127,13 +127,21 @@ function draw() {
         fixPuzzle(i);
         putPuzzle(i);
       }
-      isPuzzleDone();
+
+      if (pzEnd[1]==true && pzEnd[2]==true && pzEnd[3]==true && pzEnd[4]==true && pzEnd[5]==true && pzEnd[6]==true && pzEnd[7]==true && pzEnd[8]==true && pzEnd[9]==true && pzEnd[10]==true && pzEnd[11]==true && pzEnd[12]==true){
+        stageEnd();
+      }
       break;
-      case 2:
+    case 2:
       fill(255,0,0);
       rectMode(CORNER);
       rect(0,0,1000,800);
+      break;
     default:
+      //error page
+      fill(255,0,0);
+      rectMode(CORNER);
+      rect(100,100,800,600);
       break;
   }
 }
@@ -229,7 +237,7 @@ function fixPuzzle(_num){
     if (y<ay+d && y>ay-d){
       pzX[_num]=ax;
       pzY[_num]=ay;
-
+      pzEnd[_num]=true;
     }
   }
 
@@ -244,21 +252,19 @@ function putPuzzle( _num ){
 
   imageMode(CENTER);
   image(pic,x,y);
-
-  //forTest
-  rectMode(CENTER);
-  fill(255,0,0);
-  rect(x,y,10,10)
 }
 
-function isPuzzleDone(){
-  for (let i=1; i<13; i++){
-    if(pzEnd[i]==true){
-      countPuzzle=countPuzzle+1;
-    }
+function backgroundPuzzle(_num){
+
+}
+
+function stageEnd(){
+  stage=stage+1;
+}
+
+function keyPressed(){
+  //press P to skip stage
+  if(key=='p' || key== 'P'){
+    stageEnd();
   }
-  if(countPuzzle==12){
-    stage=stage+1;
-  }
-  countPuzzle=0;
 }
