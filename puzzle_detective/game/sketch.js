@@ -14,6 +14,19 @@ let pzAnswerY= [];
 let xDist;
 let yDist;
 let magnet;
+
+//dialogue
+let nameX;
+let nameY;
+let textX1;
+let textX2;
+let textY1;
+let textY2;
+let script;
+
+let dial = [];
+
+
 function preload(){
   //image
   ///puzzle
@@ -87,6 +100,22 @@ function setup(){
   ///puzzle12
   pzAnswerX[12]=500;
   pzAnswerY[12]=375;
+
+
+  //Dialogue
+  script=0;
+
+  nameX=30;
+  nameY=560;
+  textX1=30;
+  textX2=970;
+  textY1=600;
+  textY2=790;
+
+  for (let i = 0; i < 10; i++){
+    dial[i]= [];
+  }
+  dial[0][0]= new Dialogue(0,0);
 }
 
 function draw() {
@@ -113,6 +142,7 @@ function draw() {
   switch (stage) {
 
     case 0:
+      printDialogue(stage,script);
       break;
 
     case 1:
@@ -267,4 +297,65 @@ function keyPressed(){
   if(key=='p' || key== 'P'){
     stageEnd();
   }
+}
+
+function printDialogue(_stage, _script){
+  let a=_stage;
+  let b=_script;
+  let c=dial[a][b].type;
+  switch(c){
+    case 'test':
+      dial[a][b].timer();
+      dial[a][b].present();
+      if(dial[a][b].finished){
+        dial[a][b].clickToContinue();
+      }
+      break;
+    case 'default':
+      break;
+    }
+}
+
+
+
+class Dialogue {
+  constructor(_chapter, _number){
+    this.chap=_chapter;
+    this.num=_number;
+    this.source = 'Writings for test. I always thought that I could be a pilot someday.'; //csv에서 내용 갖고오기
+    this.speaker = 'speaker';
+    this.type = 'test'; //csv에서 type 갖고오기
+    this.spd= 3;
+    this.count= 0;
+    this.letters= 0;
+    this.finished= false;
+  }
+
+  timer () {
+    this.count++;
+    if(this.count==this.spd){
+      this.letters=this.letters+1;
+      this.count=0;
+    }
+  }
+
+  present () {
+
+    let nowShowing = this.source.substring(0, this.letters);
+    text(this.speaker, nameX, nameY);
+    text(nowShowing, nameX, nameY);
+    if(nowShowing.length==this.source.length){
+      this.finished=true;
+    }
+  }
+
+  clickToContinue(){
+    if(mouseY>550){
+      if (mouseIsPressed){
+        script=script+1;
+        this.finished=false;
+      }
+    }
+  }
+
 }
