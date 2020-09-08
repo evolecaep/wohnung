@@ -23,9 +23,9 @@ let textX2;
 let textY1;
 let textY2;
 let script;
+let scriptCount;
 
 let dial = [];
-let sheet = [];
 
 
 function preload(){
@@ -43,9 +43,6 @@ function preload(){
   pz[10]= loadImage('data/image/puzzle/pz10.png');
   pz[11]= loadImage('data/image/puzzle/pz11.png');
   pz[12]= loadImage('data/image/puzzle/pz12.png');
-
-  sheet[0]= loadTable('data/script/script_sheet_0.csv', 'csv', 'header');
-  sheet[1]= loadTable('data/script/script_sheet_1.csv', 'csv', 'header');
 }
 
 
@@ -108,23 +105,15 @@ function setup(){
 
   //Dialogue
   script=0;
+  scriptCount=0;
 
   nameX=30;
-  nameY=580;
+  nameY=560;
   textX1=30;
   textX2=970;
   textY1=600;
   textY2=790;
 
-  for (let i = 0; i < 10; i++){
-    dial[i]= [];
-  } //make 2D array
-  for (let i = 0; i < 2 ; i++){
-    for (let j=0; j<sheet[i].getRowCount(); j++){
-      dial[i][j]= new Dialogue(i,j);
-    }
-  }
-}
 
 function draw() {
   background(0);
@@ -154,8 +143,6 @@ function draw() {
       break;
 
     case 1:
-    printDialogue(stage,script);
-
       for(let i=1; i<13; i++){
         if(mouseIsPressed==false){
           sensePuzzle(i);
@@ -307,9 +294,6 @@ function keyPressed(){
   if(key=='p' || key== 'P'){
     stageEnd();
   }
-  if (key=='o'|| key=='O'){
-    script = script+1;
-  }
 }
 
 function printDialogue(_stage, _script){
@@ -324,33 +308,54 @@ function printDialogue(_stage, _script){
         dial[a][b].clickToContinue();
       }
       break;
-    case 'continuous':
-    dial[a][b].timer();
-    dial[a][b].present();
-    if(dial[a][b].finished){
-      dial[a][b].clickToContinue();
-    }
-      break;
-    case 'static':
-    dial[a][b].timer();
-    dial[a][b].present();
-    if(dial[a][b].finished){
-    }
-      break;
     case 'default':
       break;
     }
 }
 
 
+//script function
+
+function scriptMaster(_status){
+  this.status = _status;
+  this.spd=3;
+  this.letters=0;
+
+  function timer(){
+    scriptCount++;
+    if(scriptCount==this.spd){
+      this.letters=this.letters+1;
+      scriptCount=0;
+    }
+  }
+
+
+  switch(status){
+    case 'story':
+      this.chapter=stage;
+      this.number=script;
+      this.type=;
+      this.source=;
+
+
+      break;
+
+    case 'system':
+      break;
+
+    case 'default':
+      break;
+  }
+}
+
 
 class Dialogue {
   constructor(_chapter, _number){
     this.chap=_chapter;
     this.num=_number;
-    this.source = sheet[this.chap].getString(this.num, 'text'); //csv에서 내용 갖고오기
-    this.speaker = sheet[this.chap].getString(this.num, 'speaker');
-    this.type = sheet[this.chap].getString(this.num, 'type'); //csv에서 type 갖고오기
+    this.source = 'Writings for test. I always thought that I could be a pilot someday.'; //csv에서 내용 갖고오기
+    this.speaker = 'speaker';
+    this.type = 'test'; //csv에서 type 갖고오기
     this.spd= 3;
     this.count= 0;
     this.letters= 0;
@@ -368,10 +373,8 @@ class Dialogue {
   present () {
 
     let nowShowing = this.source.substring(0, this.letters);
-    this.nameDesign();
     text(this.speaker, nameX, nameY);
-    this.textDesign();
-    text(nowShowing, textX1, textY1, textX2, textY2);
+    text(nowShowing, nameX, nameY);
     if(nowShowing.length==this.source.length){
       this.finished=true;
     }
@@ -386,18 +389,4 @@ class Dialogue {
     }
   }
 
-  nameDesign(){
-    textFont('Noto Sans KR');
-    textSize(20);
-    fill(255);
-    textStyle(BOLD);
-    textAlign(LEFT);
-  }
-  textDesign(){
-    textFont('Noto Sans KR');
-    textSize(20);
-    fill(255);
-    textStyle(NORMAL);
-    textAlign(LEFT);
-  }
 }
